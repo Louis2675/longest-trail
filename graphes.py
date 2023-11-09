@@ -1,68 +1,58 @@
 """
-Fichier contenant la classe Graphe, utilisée pour le projet.
+Fichier contenant la classe graphe pondérée
 """
 
 class Graphe:
-    def __init__(self, A, S):
-        self.sommets = S
-        self.arcs = A
+    """
+    La classe Graphe contient notre graphe non orienté et pondéré
+    """
+    def __init__(self, couple_gpondere_gnormal):
+        """
+        Fonction initialisant la classe Graphe et ses attributs
+        Entree : Le couple contenant le graphe pondere sous forme de liste et le graphe non pondere sous forme de liste
+        """
+        self.graphe_pondere = couple_gpondere_gnormal[0]
+        self.graphe_simple = couple_gpondere_gnormal[1]
+        self.arretes = {}#completer sous forme de dictionnaire (0: 1;2, 3: 4) etc
 
-    def matrice_adjacence(self):
-        n = len(self.sommets)
-        M = [[0 for _ in range(n)] for _ in range(n)]
-        for (i, j) in self.arcs:
-            M[i][j] = 1
-        return M
+def generer_graphe_complet(n): G = [[j for j in range(n) if j != i] for i in range(n)]; return G
 
-    def convertir_indexe_sommet(self, S):
-        n = len(self.sommets)
-        for i in range(n):
-            self.sommets[i] = chr(65 + i)
-        return None
+def generer_graphe_aleatoire(taille=4, densite=0.4):
+    """
+    Fonction qui génère un graphe aléatoire non orienté et non pondéré
+    """
+    import random
+    G = []
+    for i in range(taille):
+        G.append([])
+    
+    for i in range(taille):
+        for j in range(i + 1, taille):  
+            if random.random() > densite and j != i: # Partie aléatoire (on met l'arrete ou non)
+                G[i].append(j)
+                G[j].append(i)
+    
+    return G
 
-    def tableau_adjanence(self):
-        n = len(self.sommets)
-        T = [[] for _ in range(n)]
-        for (i, j) in self.arcs:
-            T[i].append(j)
-        return T
+    
+def generer_graphe_aleatoire_pondere(taille=4, densite=0.4):
 
-    def dictionnaire_adjancence(self):
-        n = len(self.sommets)
-        D = {}
-        for i in range(n):
-            D[i] = []
-        for (i, j) in self.arcs:
-            D[i].append(j)
-        return D
+    import random
 
-    def parcours_largeur_graphe(self, sommet_depart=0):
-        n = len(self.sommets)
-        parcours = []
-        file = [sommet_depart]
-        while file:
-            sommet = file.pop(0)
-            if sommet not in parcours:
-                parcours.append(sommet)
-                for voisin in self.dictionnaire_adjancence()[sommet]:
-                    file.append(voisin)
-        return parcours
+    graphe = generer_graphe_aleatoire(taille, densite) # On recupere un graphe aleatoire
+    G_pondere = []
+    poids = {}  # Dictionnaire pour stocker les poids des arêtes déjà générés
 
-    def parcours_profondeur_graphe(self, sommet_depart=0):
-        n = len(self.sommets)
-        parcours = []
-        pile = [sommet_depart]
-        while pile:
-            sommet = pile.pop()
-            if sommet not in parcours:
-                parcours.append(sommet)
-                for voisin in self.dictionnaire_adjancence()[sommet]:
-                    pile.append(voisin)
-        return parcours
+    for i in range(len(graphe)):
+        G_pondere.append([])
+        for j in graphe[i]:
+            if (i, j) not in poids and (j, i) not in poids:  # Si le poids de l'arête n'a pas encore été généré
+                poids[(i, j)] = poids[(j, i)] = random.randint(1, 10)  # Générer un poids aléatoire
+            G_pondere[i].append((j, poids[(i, j)]))  # Ajouter l'arête pondérée au graphe
 
-def generer_graphe_aleatoire(n):
-    import random; G = [[j for j in range(n) if j != i and random.random() < 0.5] for i in range(n)]; return G
+    return G_pondere, graphe
 
 
-def generer_graphe_complet(n): 
-    G = [[j for j in range(n) if j != i] for i in range(n)]; return G
+
+if __name__ == "__main__":
+    print(generer_graphe_aleatoire_pondere(4))

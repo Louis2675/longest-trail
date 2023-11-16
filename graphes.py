@@ -6,16 +6,18 @@ class Graphe:
     """
     La classe Graphe contient notre graphe non orienté et pondéré
     """
-    def __init__(self, couple_gpondere_gnormal):
+    def __init__(self, graphe=[], random=True, len_graphe=0):
         """
         Fonction initialisant la classe Graphe et ses attributs
         Entree : Le couple contenant le graphe pondere sous forme de liste et le graphe non pondere sous forme de liste
         """
-        self.graphe_pondere = couple_gpondere_gnormal[0]
-        self.graphe_simple = couple_gpondere_gnormal[1]
-        self.arretes = {}#completer sous forme de dictionnaire (0: 1;2, 3: 4) etc
+        if random:
+            if len_graphe == 0:
+                len_graphe = int(input("Entrez la taille du graphe : "))
+            self.graphe = generer_graphe_aleatoire_pondere(len_graphe)
+        else:
+            self.graphe = graphe
 
-def generer_graphe_complet(n): G = [[j for j in range(n) if j != i] for i in range(n)]; return G
 
 def generer_graphe_aleatoire(taille=4, densite=0.4):
     """
@@ -50,7 +52,7 @@ def generer_graphe_aleatoire_pondere(taille=4, densite=0.4):
                 poids[(i, j)] = poids[(j, i)] = random.randint(1, 10)  # Générer un poids aléatoire
             G_pondere[i].append((j, poids[(i, j)]))  # Ajouter l'arête pondérée au graphe
 
-    return G_pondere, graphe
+    return G_pondere
 
 
 

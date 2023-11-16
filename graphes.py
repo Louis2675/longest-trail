@@ -17,7 +17,7 @@ class Graphe:
             self.graphe = generer_graphe_aleatoire_pondere(len_graphe)
         else:
             self.graphe = graphe
-
+            self.taille = len(graphe)
 
 def generer_graphe_aleatoire(taille=4, densite=0.4):
     """

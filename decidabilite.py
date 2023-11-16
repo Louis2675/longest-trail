@@ -1,33 +1,69 @@
 from graphes import Graphe
 
-def permutations(input_list):
-    if len(input_list) == 0:
-        return []
-    elif len(input_list) == 1:
-        return [input_list]
+def permutations(liste):
+    """
+    Génère toutes les permutations d'une liste donnée.
+    Entrée:
+        liste (list): La liste à permuter.
+    Sortie:
+        list: Une liste de toutes les permutations possibles de la liste d'entrée.
+    """
+    # Si la liste d'entrée ne contient qu'un seul élément, retourner cette liste
+    if len(liste) == 1:
+        return [liste]
     else:
         result = []
-        for i in range(len(input_list)):
-            remaining_elements = input_list[:i] + input_list[i+1:]
+        # Pour chaque élément dans la liste d'entrée
+        for i in range(len(liste)):
+            # Retirer l'élément actuel de la liste
+            remaining_elements = liste[:i] + liste[i+1:]
+            # Générer toutes les permutations des éléments restants
             for perm in permutations(remaining_elements):
-                result.append([input_list[i]] + perm)
-        return result
-
-def generer_combinaisons(input_list):
-    if len(input_list) == 0:
-        return [[]]
-    else:
-        result = []
-        for comb in generer_combinaisons(input_list[1:]):
-            result += [comb, [input_list[0]] + comb]
+                # Ajouter l'élément actuel à chaque permutation générée
+                result.append([liste[i]] + perm)
+        # Retourner la liste de toutes les permutations possibles
         return result
     
-def decidabilite_brute(graphe, longueur_cible):
+
+def generer_parcours(graphe):
     """
-    Entrée : graphe un graphe non orienté et pondéré et longueur_cible un nombre entier
-    Sortie : existe-t-il un chemin de longueur au moins longueur_cible ne passant pas deux fois par un même sommet ?
+    Génère tous les chemins possibles à travers un graphe.
+    Entrée:
+        graphe (Graphe): Le graphe à parcourir.
+    Sortie:
+        list: Une liste de toutes les permutations possibles des sommets du graphe.
+    """
+    # Créer une liste de tous les sommets du graphe
+    sommets = [i for i in range(graphe.taille)]
+    # Créer une liste vide pour stocker tous les chemins possibles
+    liste_parcours = []
+    # Pour chaque sommet dans le graphe
+    for i in range(graphe.taille):
+        # Générer toutes les permutations des premiers i+1 sommets
+        liste_parcours.append(permutations(sommets[:i+1]))
+    # Retourner la liste de tous les chemins possibles
+    return liste_parcours
+
+
+def reducion_taille(graphe, liste_parcours):
+    """
+    Permet de retirer
     """
 
+def decidabilite_brute(graphe, longueur_cible):
+    """
+    Détermine si un chemin de longueur au moins longueur_cible existe dans le graphe.
+    Entrée:
+        graphe (Graphe): Le graphe à parcourir.
+        longueur_cible (int): La longueur minimale du chemin recherché.
+    Sortie:
+        bool: True si un chemin de longueur au moins longueur_cible existe, False sinon.
+    """
+    # TODO: implémenter la fonction de décision de manière brute
+
+
 if __name__ == "__main__":
+    # Créer un graphe à partir d'une liste d'adjacence pondérée
     G = Graphe([[(5, 2)], [(2, 1), (4, 3)], [(1,1), (4, 4), (3, 5)], [(0, 2), (2, 5)], [(1, 3), (2, 4)]], False)
-    print(permutations([1,2,3,4,5]))    
+    # Générer tous les chemins possibles à travers le graphe
+    print(generer_parcours(G))

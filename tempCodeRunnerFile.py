@@ -1,5 +1,3 @@
-    print(generer_parcours(G))
-    print()
-    print()
-    print("Liste des parcours valides : ")
-    print(test_arretes_parcours(G, generer_parcours(G)))
+def generer_parcours(graphe):
+#     nb_max = graphe.taille
+#     for taille_liste

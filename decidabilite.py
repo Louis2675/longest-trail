@@ -1,47 +1,34 @@
 from graphes import Graphe
 
-def permutations(liste):
-    """
-    Génère toutes les permutations d'une liste donnée.
-    Entrée:
-        liste (list): La liste à permuter.
-    Sortie:
-        list: Une liste de toutes les permutations possibles de la liste d'entrée.
-    """
-    # Si la liste d'entrée ne contient qu'un seul élément, retourner cette liste
-    if len(liste) == 1:
-        return [liste]
+
+def permutations(liste, n):
+    if n == 0:
+        return [[]]
     else:
         result = []
-        # Pour chaque élément dans la liste d'entrée
         for i in range(len(liste)):
-            # Retirer l'élément actuel de la liste
             remaining_elements = liste[:i] + liste[i+1:]
-            # Générer toutes les permutations des éléments restants
-            for perm in permutations(remaining_elements):
-                # Ajouter l'élément actuel à chaque permutation générée
+            for perm in permutations(remaining_elements, n-1):
                 result.append([liste[i]] + perm)
-        # Retourner la liste de toutes les permutations possibles
         return result
-    
+
+
+def permutations_de_taille_n(x, n):
+    liste = [i for i in range(x)]
+    return permutations(liste, n)
+
 
 def generer_parcours(graphe):
     """
-    Génère tous les chemins possibles à travers un graphe.
+    Génère tous les parcours possibles à travers le graphe.
     Entrée:
         graphe (Graphe): Le graphe à parcourir.
     Sortie:
-        list: Une liste de toutes les permutations possibles des sommets du graphe.
+        list: La liste de tous les parcours possibles.
     """
-    # Créer une liste de tous les sommets du graphe
-    sommets = [i for i in range(graphe.taille)]
-    # Créer une liste vide pour stocker tous les chemins possibles
     liste_parcours = []
-    # Pour chaque sommet dans le graphe
-    for i in range(graphe.taille):
-        # Générer toutes les permutations des premiers i+1 sommets
-        liste_parcours.append(permutations(sommets[:i+1]))
-    # Retourner la liste de tous les chemins possibles
+    for i in range(graphe.taille +1):
+        liste_parcours.append(permutations_de_taille_n(graphe.taille, i))
     return liste_parcours
 
 
@@ -60,6 +47,7 @@ def arrete_existe(graphe, sommet1, sommet2):
             return True
     return False
 
+
 def test_arretes_parcours(graphe, liste_parcours):
     liste_parcours_valide = []
     for i in range(len(liste_parcours)):
@@ -72,31 +60,72 @@ def test_arretes_parcours(graphe, liste_parcours):
                 liste_parcours_valide.append(liste_parcours[i][j])
     return liste_parcours_valide            
 
-def reducion_taille(graphe, liste_parcours):
-    """
-    Permet de retirer
-    """
 
-def decidabilite_brute(graphe, longueur_cible):
+def taille_arrete(graphe, sommet1, sommet2):
     """
-    Détermine si un chemin de longueur au moins longueur_cible existe dans le graphe.
+    Détermine la taille d'une arête entre deux sommets donnés.
     Entrée:
         graphe (Graphe): Le graphe à parcourir.
-        longueur_cible (int): La longueur minimale du chemin recherché.
+        sommet1 (int): Le premier sommet.
+        sommet2 (int): Le deuxième sommet.
     Sortie:
-        bool: True si un chemin de longueur au moins longueur_cible existe, False sinon.
+        int: La taille de l'arête entre les deux sommets, False si l'arête n'existe pas.
     """
-    # TODO: implémenter la fonction de décision de manière brute
+
+    for i in range(len(graphe.graphe[sommet1])):
+        if graphe.graphe[sommet1][i][0] == sommet2:
+            return graphe.graphe[sommet1][i][1]
+    return False
+
+
+def taille_parcours(graphe, parcours):
+    """
+    Détermine la taille d'un parcours donné.
+    Entrée:
+        graphe (Graphe): Le graphe à parcourir.
+        parcours (list): Le parcours à évaluer.
+    Sortie:
+        int: La taille du parcours, False si le parcours n'est pas valide.
+    """
+    taille = 0
+    for i in range(len(parcours) - 1):
+        taille += taille_arrete(graphe, parcours[i], parcours[i+1])
+    return taille
+
+
+def taille_maximale_parcours_valide(graphe):
+    """
+    Détermine la taille maximale d'un parcours valide dans le graphe.
+    Entrée:
+        graphe (Graphe): Le graphe à parcourir.
+    Sortie:
+        int: La taille maximale d'un parcours valide.
+    """
+    liste_parcours = generer_parcours(graphe)
+    liste_parcours_valide = test_arretes_parcours(graphe, liste_parcours)
+    taille_max = (0, 0)
+    for i in range(len(liste_parcours_valide)):
+        if taille_parcours(graphe, liste_parcours_valide[i]) > taille_max[0]:
+            taille_max = (taille_parcours(graphe, liste_parcours_valide[i]), i)
+    return taille_max
 
 
 if __name__ == "__main__":
     # Créer un graphe à partir d'une liste d'adjacence pondérée
-    G = Graphe([[(5, 2)], [(2, 1), (4, 3)], [(1,1), (4, 4), (3, 5)], [(0, 2), (2, 5)], [(1, 3), (2, 4)]], False)
+    G = Graphe([[(3, 2)], [(2, 1), (4, 3)], [(1,1), (4, 4), (3, 5)], [(0, 2), (2, 5)], [(1, 3), (2, 4)]], False)
+    Gperm = Graphe([[(3, 2)], [(2, 1), (4, 3)], [(2, 1), (4, 3)]], False)
     # Générer tous les chemins possibles à travers le graphe
-
     print(arrete_existe(G, 0, 1))
     print(generer_parcours(G))
     print()
     print()
     print("Liste des parcours valides : ")
-    print(test_arretes_parcours(G, generer_parcours(G)))
+    liste = test_arretes_parcours(G, generer_parcours(G))
+    print(liste)
+    print()
+    for i in range(len(liste)):
+        print(taille_parcours(G, liste[i]), end=" ; ")
+    print()
+    print()
+    print("Taille maximale d'un parcours valide : ", taille_maximale_parcours_valide(G)[0])
+    print("Le parcours numéro :", taille_maximale_parcours_valide(G)[1])

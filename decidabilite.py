@@ -45,6 +45,33 @@ def generer_parcours(graphe):
     return liste_parcours
 
 
+def arrete_existe(graphe, sommet1, sommet2):
+    """
+    Détermine si une arête existe entre deux sommets donnés.
+    Entrée:
+        graphe (Graphe): Le graphe à parcourir.
+        sommet1 (int): Le premier sommet.
+        sommet2 (int): Le deuxième sommet.
+    Sortie:
+        bool: True si une arête existe entre les deux sommets, False sinon.
+    """
+    for i in range(len(graphe.graphe[sommet1])):
+        if graphe.graphe[sommet1][i][0] == sommet2:
+            return True
+    return False
+
+def test_arretes_parcours(graphe, liste_parcours):
+    liste_parcours_valide = []
+    for i in range(len(liste_parcours)):
+        for j in range(len(liste_parcours[i])):
+            valide = True
+            for k in range(len(liste_parcours[i][j]) -1):
+                if arrete_existe(graphe, liste_parcours[i][j][k], liste_parcours[i][j][k+1]) == False:
+                    valide = False
+            if valide == True:
+                liste_parcours_valide.append(liste_parcours[i][j])
+    return liste_parcours_valide            
+
 def reducion_taille(graphe, liste_parcours):
     """
     Permet de retirer
@@ -66,4 +93,10 @@ if __name__ == "__main__":
     # Créer un graphe à partir d'une liste d'adjacence pondérée
     G = Graphe([[(5, 2)], [(2, 1), (4, 3)], [(1,1), (4, 4), (3, 5)], [(0, 2), (2, 5)], [(1, 3), (2, 4)]], False)
     # Générer tous les chemins possibles à travers le graphe
+
+    print(arrete_existe(G, 0, 1))
     print(generer_parcours(G))
+    print()
+    print()
+    print("Liste des parcours valides : ")
+    print(test_arretes_parcours(G, generer_parcours(G)))

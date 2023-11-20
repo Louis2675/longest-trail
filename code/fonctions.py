@@ -1,3 +1,8 @@
+"""
+Fichier contenant et initialisant la classe graphe et ses initialisations.
+"""
+
+
 from graphes import Graphe
 
 
@@ -106,8 +111,25 @@ def taille_maximale_parcours_valide(graphe):
     taille_max = (0, 0)
     for i in range(len(liste_parcours_valide)):
         if taille_parcours(graphe, liste_parcours_valide[i]) > taille_max[0]:
-            taille_max = (taille_parcours(graphe, liste_parcours_valide[i]), i)
+            taille_max = (taille_parcours(graphe, liste_parcours_valide[i]), i, liste_parcours_valide[i])
     return taille_max
+
+def decidabilite(graphe, k):
+    """
+    Détermine si le graphe est k-coloriable.
+    Entrée:
+        graphe (Graphe): Le graphe à colorier.
+        k (int): Le nombre de couleurs.
+    Sortie:
+        bool: True si le graphe est k-coloriable, False sinon.
+    """
+    if taille_maximale_parcours_valide(graphe)[0] >= k:
+        return True
+    return False
+
+
+def calculabilite(graphe):
+    return (taille_maximale_parcours_valide(graphe)[2], taille_maximale_parcours_valide(graphe)[0]) 
 
 
 if __name__ == "__main__":
@@ -115,7 +137,7 @@ if __name__ == "__main__":
     G = Graphe([[(3, 2)], [(2, 1), (4, 3)], [(1,1), (4, 4), (3, 5)], [(0, 2), (2, 5)], [(1, 3), (2, 4)]], False)
     Gperm = Graphe([[(3, 2)], [(2, 1), (4, 3)], [(2, 1), (4, 3)]], False)
     # Générer tous les chemins possibles à travers le graphe
-    print(arrete_existe(G, 0, 1))
+    print("Liste de tous les chemins passant maximum une fois par sommet :")
     print(generer_parcours(G))
     print()
     print()
@@ -123,9 +145,17 @@ if __name__ == "__main__":
     liste = test_arretes_parcours(G, generer_parcours(G))
     print(liste)
     print()
+    print("Tailles des parcours valides")
     for i in range(len(liste)):
-        print(taille_parcours(G, liste[i]), end=" ; ")
+        print("{}.".format(i), taille_parcours(G, liste[i]), end=" ; ")
     print()
     print()
     print("Taille maximale d'un parcours valide : ", taille_maximale_parcours_valide(G)[0])
     print("Le parcours numéro :", taille_maximale_parcours_valide(G)[1])
+
+    print()
+
+    print("Le parcours a t-il un chemin de taille 14 sans passer deux fois par le meme sommet ?", decidabilite(G, 14))
+    print("Le parcours a t-il un chemin de taille 15 sans passer deux fois par le meme sommet ?", decidabilite(G, 15))
+
+    print("Le parcours le plus grand est : ", calculabilite(G))

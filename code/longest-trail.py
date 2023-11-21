@@ -1,14 +1,15 @@
 """
 Fichier gerant le lancement du programme.
+Permet de choisir entre une excecution avec suivi et sans suivi.
 """
 
 from graphes import Graphe
-from fonctions import calculabilite, decidabilite
+from fonctions import calculabilite, decidabilite, decidabilite_suivi, calculabilite_suivi
 
-# suivi = ""
-# while not (suivi in ["oui", "non"]):
-#     entree_graphe = input("Voulez-vous un suivi du programme ? (oui/non) : ")
-#     entree_graphe = entree_graphe.lower()
+suivi = ""
+while not (suivi in ["oui", "non"]):
+    suivi = input("Voulez-vous un suivi du programme ? (oui/non) : ")
+    suivi = suivi.lower()
 
 Graphe_test_base = Graphe([[(3, 2)], [(2, 1), (4, 3)], [(1,1), (4, 4), (3, 5)], [(0, 2), (2, 5)], [(1, 3), (2, 4)]], False)
 liste_graphes_generiques = [Graphe_test_base]
@@ -51,13 +52,25 @@ if entree == "d" or entree == "b":
         test_all = input("Voulez-vous tester toutes les tailles de 0 a k ? (oui/non) : ")
         test_all = test_all.lower()
 
-    if test_all == "oui":
+    if test_all == "oui" and suivi == "oui":
+        for i in range(k+1):
+            print("k = {} : {}".format(i, decidabilite_suivi(Graphe, i)))
+        
+    elif test_all == "oui" and suivi == "non":
         for i in range(k+1):
             print("k = {} : {}".format(i, decidabilite(Graphe, i)))
-        
+
+    elif test_all == "non" and suivi == "oui":
+        print("k = {} : {}".format(k, decidabilite_suivi(Graphe, k)))
+
     else:
         print("k = {} : {}".format(k, decidabilite(Graphe, k)))
 
-if entree == "c" or entree == "b":
-    print("on commence la calculabilite...")
-    print("Le parcours le plus grand sans passer deux fois par le meme sommet est :", calculabilite(Graphe)[0], "; max_len =", calculabilite(Graphe)[1])
+if suivi == "oui":
+    if entree == "c" or entree == "b":
+        print("on commence la calculabilite...")
+        print("Le parcours le plus grand sans passer deux fois par le meme sommet est :", calculabilite_suivi(Graphe)[0], "; max_len =", calculabilite(Graphe)[1])
+else:
+    if entree == "c" or entree == "b":
+        print("on commence la calculabilite...")
+        print("Le parcours le plus grand sans passer deux fois par le meme sommet est :", calculabilite(Graphe)[0], "; max_len =", calculabilite(Graphe)[1])

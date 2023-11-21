@@ -1,26 +1,41 @@
 """
-Fichier contenant et initialisant la classe graphe et ses initialisations.
+Fichier qui contient l'ensemble des fonctions pour le bon fonctionnement du programme.
 """
 
-
+from time import sleep
 from graphes import Graphe
 
 
 def permutations(liste, n):
+    """
+    Genere toutes les permutations d'une liste
+    Entrée:
+        liste (list): La liste à permuter.
+        n (int): La taille des permutations.
+    Sortie : 
+        La liste de toutes les permutations.
+    """
     if n == 0:
         return [[]]
     else:
-        result = []
-        for i in range(len(liste)):
-            remaining_elements = liste[:i] + liste[i+1:]
-            for perm in permutations(remaining_elements, n-1):
-                result.append([liste[i]] + perm)
-        return result
+        resultat = []
+        for i in range(len(liste)): # Pour parcourir la liste
+            reste = liste[:i] + liste[i+1:] # On initie premier element + reste
+            for perm in permutations(reste, n-1): # Pour le reste
+                resultat.append([liste[i]] + perm) # On ajoute dans les permutations
+        return resultat
+
 
 
 def permutations_de_taille_n(x, n):
-    liste = [i for i in range(x)]
-    return permutations(liste, n)
+    """
+    Fonction qui genere toutes les permutations de taille n pour x nombres
+    Entree : 
+        x (int): Le nombre de nombres.
+        n (int): La taille des permutations.
+    """
+    liste = [i for i in range(x)] # Liste des sommets
+    return permutations(liste, n) # On fait toutes les permutations des tailles n 
 
 
 def generer_parcours(graphe):
@@ -29,11 +44,11 @@ def generer_parcours(graphe):
     Entrée:
         graphe (Graphe): Le graphe à parcourir.
     Sortie:
-        list: La liste de tous les parcours possibles.
+        La liste de tous les parcours possibles.
     """
-    liste_parcours = []
-    for i in range(graphe.taille +1):
-        liste_parcours.append(permutations_de_taille_n(graphe.taille, i))
+    liste_parcours = [] # liste des parcours a retourner
+    for i in range(graphe.taille +1): # pour toutes les tailles
+        liste_parcours.append(permutations_de_taille_n(graphe.taille, i)) # on met les permutations de taille i
     return liste_parcours
 
 
@@ -47,22 +62,32 @@ def arrete_existe(graphe, sommet1, sommet2):
     Sortie:
         bool: True si une arête existe entre les deux sommets, False sinon.
     """
-    for i in range(len(graphe.graphe[sommet1])):
-        if graphe.graphe[sommet1][i][0] == sommet2:
+    for i in range(len(graphe.graphe[sommet1])): # On parcourt le graphe pour checker les arretes
+        if graphe.graphe[sommet1][i][0] == sommet2: # Si les deux existent
             return True
     return False
 
 
 def test_arretes_parcours(graphe, liste_parcours):
-    liste_parcours_valide = []
-    for i in range(len(liste_parcours)):
-        for j in range(len(liste_parcours[i])):
+    """
+    Vérifie si les arêtes d'un parcours sont valides dans le graphe.
+
+    Entrée:
+        graphe (Graphe): Le graphe à tester.
+        liste_parcours (list): La liste des parcours à évaluer.
+
+    Sortie:
+        list: La liste des parcours valides.
+    """
+    liste_parcours_valide = [] # Liste des parcours a retourner
+    for i in range(len(liste_parcours)): # on parcourt tous les parcours
+        for j in range(len(liste_parcours[i])): # dans chaques tailles 
             valide = True
-            for k in range(len(liste_parcours[i][j]) -1):
-                if arrete_existe(graphe, liste_parcours[i][j][k], liste_parcours[i][j][k+1]) == False:
+            for k in range(len(liste_parcours[i][j]) -1): # on verifie toutes les arretes
+                if arrete_existe(graphe, liste_parcours[i][j][k], liste_parcours[i][j][k+1]) == False: # si l'arrete existe
                     valide = False
             if valide == True:
-                liste_parcours_valide.append(liste_parcours[i][j])
+                liste_parcours_valide.append(liste_parcours[i][j]) # si tout est bon on ajoute
     return liste_parcours_valide            
 
 
@@ -77,9 +102,9 @@ def taille_arrete(graphe, sommet1, sommet2):
         int: La taille de l'arête entre les deux sommets, False si l'arête n'existe pas.
     """
 
-    for i in range(len(graphe.graphe[sommet1])):
-        if graphe.graphe[sommet1][i][0] == sommet2:
-            return graphe.graphe[sommet1][i][1]
+    for i in range(len(graphe.graphe[sommet1])): # on parcourt le graphe
+        if graphe.graphe[sommet1][i][0] == sommet2: # si l'arrete existe (evite des erreurs)
+            return graphe.graphe[sommet1][i][1] # on retourne la taille de l'arrete
     return False
 
 
@@ -93,8 +118,8 @@ def taille_parcours(graphe, parcours):
         int: La taille du parcours, False si le parcours n'est pas valide.
     """
     taille = 0
-    for i in range(len(parcours) - 1):
-        taille += taille_arrete(graphe, parcours[i], parcours[i+1])
+    for i in range(len(parcours) - 1): # pour toutes les arretes du parcours
+        taille += taille_arrete(graphe, parcours[i], parcours[i+1]) # on ajoute la taille de toutes les arretes
     return taille
 
 
@@ -106,56 +131,83 @@ def taille_maximale_parcours_valide(graphe):
     Sortie:
         int: La taille maximale d'un parcours valide.
     """
-    liste_parcours = generer_parcours(graphe)
-    liste_parcours_valide = test_arretes_parcours(graphe, liste_parcours)
+    liste_parcours = generer_parcours(graphe) # liste de base
+    liste_parcours_valide = test_arretes_parcours(graphe, liste_parcours) # liste avec les arretes valides
     taille_max = (0, 0)
-    for i in range(len(liste_parcours_valide)):
-        if taille_parcours(graphe, liste_parcours_valide[i]) > taille_max[0]:
-            taille_max = (taille_parcours(graphe, liste_parcours_valide[i]), i, liste_parcours_valide[i])
+    for i in range(len(liste_parcours_valide)): # on parcourt tous les chemins et on cherche le plus grand
+        if taille_parcours(graphe, liste_parcours_valide[i]) > taille_max[0]: # si le chemin est plus grand que taille_max
+            taille_max = (taille_parcours(graphe, liste_parcours_valide[i]), i, liste_parcours_valide[i]) # taille_max = chemin
     return taille_max
+
+
+def taille_maximale_parcours_valide_suivi(graphe):
+    """
+    Détermine la taille maximale d'un parcours valide dans le graphe. avec suivi
+    Entrée:
+        graphe (Graphe): Le graphe à parcourir.
+    Sortie:
+        int: La taille maximale d'un parcours valide.
+    """
+    print("On commence par générer tous les parcours possibles (meme les parcours non valides)...")
+    print()
+    sleep(1)
+    liste_parcours = generer_parcours(graphe) # on initie la liste
+    print("On obtient les parcours suivants :")
+    print(liste_parcours)
+    print()
+    sleep(1)
+    print("On elimine ensuite les parcours avec les arretes non valides...")
+    liste_parcours_valide = test_arretes_parcours(graphe, liste_parcours) # avec les parcours valides
+    print()
+    sleep(1)
+    print("On obtient ensuite les parcours suivants : ")
+    print(liste_parcours_valide)
+    print()
+    sleep(1)
+    print("On determine ensuite le parcours avec la plus grande taille du lot...")
+    sleep(1)
+    taille_max = (0, 0)
+    print("taille_max = 0")
+    for i in range(len(liste_parcours_valide)): # pour trouver la taille-max
+        if taille_parcours(graphe, liste_parcours_valide[i]) > taille_max[0]: # on compare chemin actuel avec ancien plus grand
+            taille_max = (taille_parcours(graphe, liste_parcours_valide[i]), i, liste_parcours_valide[i]) # si actuel plus grand alors actuel = taille_max
+            print("Le parcours {} est plus grand que la taille max, taille_max = {}".format(i, taille_parcours(graphe, liste_parcours_valide[i])))
+    return taille_max
+
 
 def decidabilite(graphe, k):
     """
-    Détermine si le graphe est k-coloriable.
+    Détermine si le graphe possiblement de longueur > k pour le plus grand parcours
     Entrée:
-        graphe (Graphe): Le graphe à colorier.
+        graphe (Graphe): Le graphe a tester
         k (int): Le nombre de couleurs.
     Sortie:
-        bool: True si le graphe est k-coloriable, False sinon.
+        bool: True si le graphe est possiblement plus grand; False sinon
     """
-    if taille_maximale_parcours_valide(graphe)[0] >= k:
+    if taille_maximale_parcours_valide(graphe)[0] >= k: # si la taille max du chemin > k
         return True
     return False
 
 
+def decidabilite_suivi(graphe, k):
+    """
+    Donne le plus grand parcours et sa taille k avec suivi
+    Entrée:
+        graphe (Graphe): Le graphe a tester
+        k (int): Le nombre de couleurs.
+    Sortie:
+        le + grand parcours
+    """
+    if taille_maximale_parcours_valide_suivi(graphe)[0] >= k: # si la taille max du chemin > k
+        print("La taille du plus grand parcours est plus grande que {} alors True".format(k))
+        return True
+    print("La taille du parcours le plus grand est inferieur a {}".format(k))
+    return False
+
+
 def calculabilite(graphe):
-    return (taille_maximale_parcours_valide(graphe)[2], taille_maximale_parcours_valide(graphe)[0]) 
+    return (taille_maximale_parcours_valide(graphe)[2], taille_maximale_parcours_valide(graphe)[0]) # on retourne le plus grand chemin et sa taille
 
 
-if __name__ == "__main__":
-    # Créer un graphe à partir d'une liste d'adjacence pondérée
-    G = Graphe([[(3, 2)], [(2, 1), (4, 3)], [(1,1), (4, 4), (3, 5)], [(0, 2), (2, 5)], [(1, 3), (2, 4)]], False)
-    Gperm = Graphe([[(3, 2)], [(2, 1), (4, 3)], [(2, 1), (4, 3)]], False)
-    # Générer tous les chemins possibles à travers le graphe
-    print("Liste de tous les chemins passant maximum une fois par sommet :")
-    print(generer_parcours(G))
-    print()
-    print()
-    print("Liste des parcours valides : ")
-    liste = test_arretes_parcours(G, generer_parcours(G))
-    print(liste)
-    print()
-    print("Tailles des parcours valides")
-    for i in range(len(liste)):
-        print("{}.".format(i), taille_parcours(G, liste[i]), end=" ; ")
-    print()
-    print()
-    print("Taille maximale d'un parcours valide : ", taille_maximale_parcours_valide(G)[0])
-    print("Le parcours numéro :", taille_maximale_parcours_valide(G)[1])
-
-    print()
-
-    print("Le parcours a t-il un chemin de taille 14 sans passer deux fois par le meme sommet ?", decidabilite(G, 14))
-    print("Le parcours a t-il un chemin de taille 15 sans passer deux fois par le meme sommet ?", decidabilite(G, 15))
-
-    print("Le parcours le plus grand est : ", calculabilite(G))
+def calculabilite_suivi(graphe):
+    return (taille_maximale_parcours_valide_suivi(graphe)[2], taille_maximale_parcours_valide(graphe)[0]) # on retourne le plus grand chemin et sa taille

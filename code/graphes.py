@@ -11,44 +11,62 @@ class Graphe:
         Fonction initialisant la classe Graphe et ses attributs
         Entree : Le couple contenant le graphe pondere sous forme de liste et le graphe non pondere sous forme de liste
         """
-        if random:
+        if random: # si on veut un graphe aleatoire
             if len_graphe == 0:
+                # Saisie pour la taille du graphe
                 try:
                     len_graphe = int(input("Entrez la taille du graphe : "))
                 except ValueError:
                     print("Veuillez entrer un nombre entier.")
                     len_graphe = int(input("Entrez la taille du graphe : "))
+                # Saisie pour la densite du graphe
                 try:
                     densite = float(input("Entrez la densité du graphe : "))
                 except ValueError:
                     print("Veuillez entrer un nombre entre 0 et 1 (plus le nombre est proche de 0 moins de chance d'avoir des arêtes) : ")
                     densite = float(input("Entrez la densité du graphe : "))
-            self.graphe = generer_graphe_aleatoire_pondere(len_graphe, densite)
-            self.taille = len_graphe
+            self.graphe = generer_graphe_aleatoire_pondere(len_graphe, densite) # On genere donc ensuite le graphe avec les infos recueillies
+            self.taille = len_graphe # on initialise la taille
         else:
-            self.graphe = graphe
-            self.taille = len(graphe)
+            self.graphe = graphe # on prend le graphe en entree 
+            self.taille = len(graphe) # et sa taille
 
 def generer_graphe_aleatoire(taille=4, densite=0.4):
     """
-    Fonction qui génère un graphe aléatoire non orienté et non pondéré
+    Génère un graphe aléatoire non orienté et non pondéré.
+
+    Entrée:
+        taille (int): Le nombre de sommets du graphe (par défaut 4).
+        densite (float): La densité de l'arête entre deux sommets (par défaut 0.4).
+
+    Sortie:
+        list: Le graphe aléatoire généré sous forme de liste d'adjacence.
     """
     import random
-    G = []
+    G = [] # le graphe en liste
     for i in range(taille):
         G.append([])
     
-    for i in range(taille):
+    for i in range(taille): # pour tous les sommets
         for j in range(i + 1, taille):  
             if random.random() <= densite and j != i: # Partie aléatoire (on met l'arrete ou non)
-                G[i].append(j)
-                G[j].append(i)
+                G[i].append(j) # On met l'arrete dans les deux sens car non oriente
+                G[j].append(i) # On met l'arrete dans les deux sens car non oriente
     
     return G
 
     
 def generer_graphe_aleatoire_pondere(taille=4, densite=0.4):
+    """
+    Génère un graphe aléatoire non orienté et pondéré.
 
+    Entrée:
+        taille (int): Le nombre de sommets du graphe (par défaut 4).
+        densite (float): La densité de l'arête entre deux sommets (par défaut 0.4).
+
+    Sortie:
+        list: Le graphe aléatoire pondéré généré sous forme de liste d'adjacence.
+    """
     import random
 
     graphe = generer_graphe_aleatoire(taille, densite) # On recupere un graphe aleatoire
@@ -64,7 +82,3 @@ def generer_graphe_aleatoire_pondere(taille=4, densite=0.4):
 
     return G_pondere
 
-
-
-if __name__ == "__main__":
-    print(generer_graphe_aleatoire_pondere(4))

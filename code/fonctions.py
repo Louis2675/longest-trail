@@ -26,7 +26,6 @@ def permutations(liste, n):
         return resultat
 
 
-
 def permutations_de_taille_n(x, n):
     """
     Fonction qui genere toutes les permutations de taille n pour x nombres

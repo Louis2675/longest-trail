@@ -7,22 +7,26 @@ from graphes import Graphe
 from calculabilite import calculabilite, calculabilite_suivi
 from decidabilite import decidabilite, decidabilite_suivi
 
+
 # Saisie pour le suivi dans le programme
 suivi = ""
 while not (suivi in ["oui", "non"]):
     suivi = input("Voulez-vous un suivi du programme ? (oui/non) : ")
     suivi = suivi.lower()
 
+
 # Un graphe de base 
 Graphe_test_base = Graphe([[(3, 2)], [(2, 1), (4, 3)], [(1,1), (4, 4), (3, 5)], [(0, 2), (2, 5)], [(1, 3), (2, 4)]], False)
 Graphe_test_second = Graphe([[(1, 5), (2, 9), (4, 1), (6, 9)], [(0, 5), (2, 5), (3, 8), (4, 10), (7, 2), (8, 10)], [(0, 9), (1, 5), (3, 8), (4, 2), (8, 3)], [(1, 8), (2, 8), (6, 4)], [(0, 1), (1, 10), (2, 2), (5, 7)], [(4, 7)], [(0, 9), (3, 4), (7, 4)], [(1, 2), (6, 4), (8, 8)], [(1, 10), (2, 3), (7, 8)]], False)
 liste_graphes_generiques = [Graphe_test_base] # Tests : Decidabilite avec le graphe numero 0 : k = 14 : true puis reesayer avec k = 15; Avec le graphe 2, test 65 : true puis reesayer avec 66 : False calculabilite 14 et 65 respectivement pour le 1 et 2
+
 
 # Quel type de programme : decidabilite, calculabilite ou les deux 
 entree = ""
 while not (entree in ["d", "b", "c"]):
     entree = input("Désirez-vous le programme en décidabilité (d) ou en calculabilité (c) ou les deux (b) ? ")
     entree = entree.lower()
+
 
 # Saisie Graphe generique ou aleatoire
 entree_graphe = ""

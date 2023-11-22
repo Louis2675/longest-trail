@@ -6,6 +6,7 @@ class Graphe:
     """
     La classe Graphe contient notre graphe non orienté et pondéré
     """
+
     def __init__(self, graphe=[], random=True, len_graphe=0):
         """
         Fonction initialisant la classe Graphe et ses attributs
@@ -36,6 +37,7 @@ class Graphe:
         else:
             self.graphe = graphe # on prend le graphe en entree 
             self.taille = len(graphe) # et sa taille
+
 
 def generer_graphe_aleatoire(taille=4, densite=0.4):
     """

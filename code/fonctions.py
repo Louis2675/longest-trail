@@ -149,6 +149,7 @@ def taille_maximale_parcours_valide_suivi(graphe):
         tuple: La taille maximale d'un parcours valide, son numero et le chemin en question
     """
     print("On commence par générer tous les parcours possibles (meme les parcours non valides)...")
+    input()
     print()
     sleep(1)
     liste_parcours = generer_parcours(graphe) # on initie la liste
@@ -157,6 +158,7 @@ def taille_maximale_parcours_valide_suivi(graphe):
     print()
     sleep(1)
     print("On elimine ensuite les parcours avec les arretes non valides...")
+    input()
     liste_parcours_valide = test_arretes_parcours(graphe, liste_parcours) # avec les parcours valides
     print()
     sleep(1)
@@ -165,6 +167,7 @@ def taille_maximale_parcours_valide_suivi(graphe):
     print()
     sleep(1)
     print("On determine ensuite le parcours avec la plus grande taille du lot...")
+    input()
     sleep(1)
     taille_max = (0, 0)
     print("taille_max = 0")
@@ -175,57 +178,3 @@ def taille_maximale_parcours_valide_suivi(graphe):
     return taille_max
 
 
-def decidabilite(graphe, k):
-    """
-    Détermine si le graphe possiblement de longueur > k pour le plus grand parcours
-    Entrée:
-        graphe (Graphe): Le graphe a tester
-        k (int): La taille testee.
-    Sortie:
-        bool: True si le graphe est possiblement plus grand; False sinon
-    """
-    if taille_maximale_parcours_valide(graphe)[0] >= k: # si la taille max du chemin > k
-        return True
-    return False
-
-
-def decidabilite_suivi(graphe, k):
-    """
-    Donne le plus grand parcours et sa taille k avec suivi
-    Entrée:
-        graphe (Graphe): Le graphe a tester
-        k (int): La taille testee.
-    Sortie:
-        le + grand parcours
-    """
-    if taille_maximale_parcours_valide_suivi(graphe)[0] >= k: # si la taille max du chemin > k
-        print("La taille du plus grand parcours est plus grande que {} alors True".format(k))
-        return True
-    print("La taille du parcours le plus grand est inferieur a {}".format(k))
-    return False
-
-
-def calculabilite(graphe):
-    """
-    Calcule le plus grand chemin et sa taille dans le graphe.
-
-    Entrée:
-        graphe (Graphe): Le graphe à évaluer.
-
-    Sortie:
-        tuple: Un tuple contenant le plus grand chemin et sa taille.
-    """
-    return (taille_maximale_parcours_valide(graphe)[2], taille_maximale_parcours_valide(graphe)[0]) # on retourne le plus grand chemin et sa taille
-
-
-def calculabilite_suivi(graphe):
-    """
-    Calcule le plus grand chemin et sa taille dans le graphe avec suivi.
-
-    Entrée:
-        graphe (Graphe): Le graphe à évaluer.
-
-    Sortie:
-        tuple: Un tuple contenant le plus grand chemin et sa taille.
-    """
-    return (taille_maximale_parcours_valide_suivi(graphe)[2], taille_maximale_parcours_valide(graphe)[0]) # on retourne le plus grand chemin et sa taille

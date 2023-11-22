@@ -14,17 +14,23 @@ class Graphe:
         if random: # si on veut un graphe aleatoire
             if len_graphe == 0:
                 # Saisie pour la taille du graphe
-                try:
-                    len_graphe = int(input("Entrez la taille du graphe : "))
-                except ValueError:
-                    print("Veuillez entrer un nombre entier.")
-                    len_graphe = int(input("Entrez la taille du graphe : "))
+                len_graphe = -1
+                while len_graphe == -1:
+                    try:
+                        len_graphe = input("Entrez la taille du graphe : ")
+                        len_graphe = int(len_graphe)
+                    except ValueError:
+                        print("Veuillez entrer un nombre entier.")
+                        len_graphe = -1 
                 # Saisie pour la densite du graphe
-                try:
-                    densite = float(input("Entrez la densité du graphe : "))
-                except ValueError:
-                    print("Veuillez entrer un nombre entre 0 et 1 (plus le nombre est proche de 0 moins de chance d'avoir des arêtes) : ")
-                    densite = float(input("Entrez la densité du graphe : "))
+                densite = -1
+                while densite == -1 or densite < 0 or densite > 1:
+                    try:
+                        densite = input("Entrez la densité du graphe : ")
+                        densite = float(densite)
+                    except ValueError:
+                        print("Veuillez entrer un nombre entre 0 et 1 (plus le nombre est proche de 0 moins de chance d'avoir des arêtes) : ")
+                        densite = -1
             self.graphe = generer_graphe_aleatoire_pondere(len_graphe, densite) # On genere donc ensuite le graphe avec les infos recueillies
             self.taille = len_graphe # on initialise la taille
         else:

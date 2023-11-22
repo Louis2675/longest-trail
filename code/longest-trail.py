@@ -4,7 +4,8 @@ Permet de choisir entre une excecution avec suivi et sans suivi.
 """
 
 from graphes import Graphe
-from fonctions import calculabilite, decidabilite, decidabilite_suivi, calculabilite_suivi
+from calculabilite import calculabilite, calculabilite_suivi
+from decidabilite import decidabilite, decidabilite_suivi
 
 # Saisie pour le suivi dans le programme
 suivi = ""
@@ -14,7 +15,8 @@ while not (suivi in ["oui", "non"]):
 
 # Un graphe de base 
 Graphe_test_base = Graphe([[(3, 2)], [(2, 1), (4, 3)], [(1,1), (4, 4), (3, 5)], [(0, 2), (2, 5)], [(1, 3), (2, 4)]], False)
-liste_graphes_generiques = [Graphe_test_base]
+Graphe_test_second = Graphe([[(1, 5), (2, 9), (4, 1), (6, 9)], [(0, 5), (2, 5), (3, 8), (4, 10), (7, 2), (8, 10)], [(0, 9), (1, 5), (3, 8), (4, 2), (8, 3)], [(1, 8), (2, 8), (6, 4)], [(0, 1), (1, 10), (2, 2), (5, 7)], [(4, 7)], [(0, 9), (3, 4), (7, 4)], [(1, 2), (6, 4), (8, 8)], [(1, 10), (2, 3), (7, 8)]], False)
+liste_graphes_generiques = [Graphe_test_base] # Tests : Decidabilite avec le graphe numero 0 : k = 14 : true puis reesayer avec k = 15; Avec le graphe 2, test 65 : true puis reesayer avec 66 : False calculabilite 14 et 65 respectivement pour le 1 et 2
 
 # Quel type de programme : decidabilite, calculabilite ou les deux 
 entree = ""
@@ -31,12 +33,13 @@ while not (entree_graphe in ["oui", "non"]):
 if entree_graphe == "oui":
     num_graphe = -1
     while not (0 <= num_graphe <= len(liste_graphes_generiques)):
+        # Numero du graphe generique
+        num_graphe = input("Donnez le numéro du graphe générique que vous voulez utiliser : (de 0 à {}) : ".format(len(liste_graphes_generiques) -1))
         try:
-            # Numero du graphe generique
-            num_graphe = int(input("Donnez le numéro du graphe générique que vous voulez utiliser : (de 0 à {}) : ".format(len(liste_graphes_generiques) -1)))
-        except ValueError: # Si probleme avec entree, on redemande
+            num_graphe = int(num_graphe)
+        except ValueError:
             print("Veuillez entrer un nombre entier.")
-            num_graphe = int(input("Donnez le numéro du graphe générique que vous voulez utiliser : (de 0 à {}) : ".format(len(liste_graphes_generiques))))
+            num_graphe = -1
     Graphe = liste_graphes_generiques[num_graphe]
 
 else: # sinon on genere un graphe aleatoire
